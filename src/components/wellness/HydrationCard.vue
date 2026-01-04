@@ -1,8 +1,11 @@
 <script setup>
+import { computed } from "vue";
 import { Droplet, Minus, Clock } from "lucide-vue-next";
 import { BaseCard } from "../ui";
 import { useHydration } from "../../composables/useHydration";
 import { useNotifications } from "../../composables/useNotifications";
+
+const CUP_ML = 250;
 
 const { addNotification, NOTIFICATION_TYPES } = useNotifications();
 
@@ -10,7 +13,7 @@ const handleGoalReached = () => {
   addNotification({
     type: NOTIFICATION_TYPES.ACHIEVEMENT,
     title: "Meta alcançada!",
-    message: "Parabéns! Você atingiu sua meta de hidratação hoje.",
+    message: "Parabéns! Você atingiu sua meta diária de hidratação 💧",
   });
 };
 
@@ -18,12 +21,26 @@ const handleReminder = (consumed, goal) => {
   addNotification({
     type: NOTIFICATION_TYPES.REMINDER,
     title: "Hora de beber água!",
-    message: `Você bebeu ${consumed} de ${goal} copos hoje.`,
+    message: `Você bebeu ${((consumed * CUP_ML) / 1000).toFixed(1)}L de ${(
+      (goal * CUP_ML) /
+      1000
+    ).toFixed(1)}L hoje.`,
   });
 };
 
-const { goal, consumed, progress, reminderActive, add, remove, toggleReminder } =
-  useHydration(handleGoalReached, handleReminder);
+const {
+  goal, // em copos
+  consumed, // em copos
+  progress,
+  reminderActive,
+  add,
+  remove,
+  toggleReminder,
+} = useHydration(handleGoalReached, handleReminder);
+
+// derivados para UI
+const consumedLiters = computed(() => (consumed.value * CUP_ML) / 1000);
+const goalLiters = computed(() => (goal.value * CUP_ML) / 1000);
 </script>
 
 <template>
@@ -35,6 +52,7 @@ const { goal, consumed, progress, reminderActive, add, remove, toggleReminder } 
       </div>
     </template>
 
+    <!-- Progresso -->
     <div class="text-center mb-4">
       <div class="relative inline-flex items-center justify-center">
         <svg class="w-28 h-28 transform -rotate-90">
@@ -57,16 +75,20 @@ const { goal, consumed, progress, reminderActive, add, remove, toggleReminder } 
             class="transition-all duration-500"
           />
         </svg>
+
         <div class="absolute inset-0 flex items-center justify-center">
           <div class="text-center">
-            <span class="text-2xl font-bold text-gray-900">{{ consumed }}</span>
-            <span class="text-gray-500">/{{ goal }}</span>
-            <p class="text-xs text-gray-500">copos</p>
+            <span class="text-2xl font-bold text-gray-900">
+              {{ consumedLiters.toFixed(1) }}L
+            </span>
+            <span class="text-gray-500"> / {{ goalLiters.toFixed(1) }}L </span>
+            <p class="text-xs text-gray-500">hidratação diária</p>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- Controles -->
     <div class="flex items-center justify-center gap-3 mb-4">
       <button
         @click="remove"
@@ -75,6 +97,7 @@ const { goal, consumed, progress, reminderActive, add, remove, toggleReminder } 
       >
         <Minus class="w-5 h-5 text-gray-600" />
       </button>
+
       <button
         @click="add"
         :disabled="consumed >= goal"
@@ -82,14 +105,12 @@ const { goal, consumed, progress, reminderActive, add, remove, toggleReminder } 
       >
         <Droplet class="w-7 h-7 text-white" />
       </button>
-      <button
-        :disabled="consumed === 0"
-        class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 disabled:opacity-50 flex items-center justify-center transition-colors invisible"
-      >
-        <Minus class="w-5 h-5 text-gray-600" />
-      </button>
+
+      <!-- spacer -->
+      <div class="w-10 h-10 invisible"></div>
     </div>
 
+    <!-- Lembretes -->
     <button
       @click="toggleReminder"
       :class="[

@@ -1,21 +1,26 @@
 import { ref, computed, onUnmounted } from "vue";
 
+const CUP_ML = 250;
+const DAILY_GOAL_ML = 2500; // 2,5L padrão
+
 export function useHydration(onGoalReached, onReminder) {
-  const goal = ref(8);
+  // meta fixa: 10 copos
+  const goal = ref(Math.ceil(DAILY_GOAL_ML / CUP_ML));
   const consumed = ref(0);
+
   const reminderActive = ref(false);
   let reminderIntervalId = null;
 
-  const progress = computed(() => {
-    return Math.min((consumed.value / goal.value) * 100, 100);
-  });
+  // progresso normalizado (0 → 1)
+  const progress = computed(() => Math.min(consumed.value / goal.value, 1));
 
   const add = () => {
-    if (consumed.value < goal.value) {
-      consumed.value++;
-      if (consumed.value === goal.value && onGoalReached) {
-        onGoalReached();
-      }
+    if (consumed.value >= goal.value) return;
+
+    consumed.value++;
+
+    if (consumed.value === goal.value && onGoalReached) {
+      onGoalReached();
     }
   };
 
@@ -25,38 +30,37 @@ export function useHydration(onGoalReached, onReminder) {
     }
   };
 
-  const toggleReminder = () => {
-    reminderActive.value = !reminderActive.value;
-    if (reminderActive.value) {
-      // Lembrete a cada 30 minutos
-      reminderIntervalId = setInterval(() => {
-        if (consumed.value < goal.value && onReminder) {
-          onReminder(consumed.value, goal.value);
-        }
-      }, 30 * 60 * 1000);
-    } else {
-      if (reminderIntervalId) {
-        clearInterval(reminderIntervalId);
+  const startReminder = () => {
+    stopReminder();
+
+    reminderIntervalId = setInterval(() => {
+      if (consumed.value < goal.value && onReminder) {
+        onReminder(consumed.value, goal.value);
       }
-    }
+    }, 30 * 60 * 1000); // 30 minutos
   };
 
-  const cleanup = () => {
+  const stopReminder = () => {
     if (reminderIntervalId) {
       clearInterval(reminderIntervalId);
+      reminderIntervalId = null;
     }
   };
 
-  onUnmounted(cleanup);
+  const toggleReminder = () => {
+    reminderActive.value = !reminderActive.value;
+    reminderActive.value ? startReminder() : stopReminder();
+  };
+
+  onUnmounted(stopReminder);
 
   return {
-    goal,
-    consumed,
-    progress,
+    goal, // copos
+    consumed, // copos
+    progress, // 0–1
     reminderActive,
     add,
     remove,
     toggleReminder,
-    cleanup,
   };
 }

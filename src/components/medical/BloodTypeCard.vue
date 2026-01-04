@@ -21,13 +21,12 @@ watch(
     selectedType.value = newVal;
   }
 );
-
 const selectType = (type) => {
   selectedType.value = type;
-  emit("update:modelValue", type);
 };
 
 const handleSave = () => {
+  emit("update:modelValue", selectedType.value);
   emit("save", selectedType.value);
 };
 </script>
@@ -61,7 +60,7 @@ const handleSave = () => {
       variant="secondary"
       size="sm"
       @click="handleSave"
-      :disabled="selectedType === modelValue"
+      :disabled="!selectedType || selectedType === modelValue"
     >
       Salvar
     </BaseButton>

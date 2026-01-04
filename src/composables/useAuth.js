@@ -15,7 +15,6 @@ const TOKEN_STORAGE_KEY = 'aurora_token'
 const user = ref(null)
 const token = ref(null)
 
-// Inicializa do localStorage
 user.value = safeLocalStorageGet(USER_STORAGE_KEY, null, validateUserData)
 token.value = localStorage.getItem(TOKEN_STORAGE_KEY)
 

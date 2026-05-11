@@ -80,8 +80,8 @@ export function useMedicationInteractions() {
     if (medications.length >= 3) {
       interactions.push({
         severity: 'low',
-        description: `Voce esta usando ${medications.length} medicamentos. Polifarmacia aumenta risco de interacoes.`,
-        recommendation: 'Revise seus medicamentos com seu medico regularmente.',
+        description: `Você está usando ${medications.length} medicamentos. Polifarmácia aumenta risco de interações.`,
+        recommendation: 'Revise seus medicamentos com seu médico regularmente.',
         medications: medicationNames,
         id: 'polypharmacy_alert',
         isPolypharmacy: true
@@ -124,8 +124,8 @@ export function useMedicationInteractions() {
     const classInteractions = {
       'anti-inflamatorio_anticoagulante': {
         severity: 'high',
-        description: 'Anti-inflamatorios aumentam risco de sangramento com anticoagulantes.',
-        recommendation: 'Evite essa combinacao ou use com muito cuidado.'
+        description: 'Anti-inflamatórios aumentam risco de sangramento com anticoagulantes.',
+        recommendation: 'Evite essa combinação ou use com muito cuidado.'
       },
       'antidepressivo_anti-inflamatorio': {
         severity: 'moderate',
@@ -135,7 +135,7 @@ export function useMedicationInteractions() {
       'betabloqueador_antidiabetico': {
         severity: 'moderate',
         description: 'Betabloqueadores podem mascarar sintomas de hipoglicemia.',
-        recommendation: 'Monitore glicemia com frequencia.'
+        recommendation: 'Monitore glicemia com frequência.'
       },
       'estatina_antibiotico': {
         severity: 'moderate',
@@ -267,13 +267,13 @@ export function useMedicationInteractions() {
    */
   const getSymptomLabel = (symptomType) => {
     const labels = {
-      'dor': 'Dor de cabeca',
+      'dor': 'Dor de cabeça',
       'febre': 'Febre',
       'enjoo': 'Enjoo',
-      'nausea': 'Nausea',
+      'nausea': 'Náusea',
       'fadiga': 'Fadiga',
       'ansiedade': 'Ansiedade',
-      'insonia': 'Insonia',
+      'insonia': 'Insônia',
       'tosse': 'Tosse',
       'tontura': 'Tontura',
       'dor_peito': 'Dor no peito',
@@ -281,8 +281,8 @@ export function useMedicationInteractions() {
       'dor_abdominal': 'Dor abdominal',
       'diarreia': 'Diarreia',
       'tremor': 'Tremores',
-      'confusao': 'Confusao mental',
-      'palpitacao': 'Palpitacoes',
+      'confusao': 'Confusão mental',
+      'palpitacao': 'Palpitações',
       'fraqueza': 'Fraqueza muscular'
     }
     return labels[symptomType] || symptomType

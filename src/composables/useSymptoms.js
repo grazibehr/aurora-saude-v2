@@ -13,15 +13,15 @@ import {
 
 const STORAGE_KEY = 'aurora_symptoms'
 
-// Tipos de sintomas disponiveis - mapeados com IDs do backend
+// Tipos de sintomas disponíveis - mapeados com IDs do backend
 export const SYMPTOM_TYPES = [
-  { id: 'dor', backendId: 2, label: 'Dor de cabeca', icon: 'Frown', color: 'red' },
+  { id: 'dor', backendId: 2, label: 'Dor de cabeça', icon: 'Frown', color: 'red' },
   { id: 'febre', backendId: 1, label: 'Febre', icon: 'Thermometer', color: 'orange' },
   { id: 'enjoo', backendId: 6, label: 'Enjoo', icon: 'Pill', color: 'yellow' },
   { id: 'fadiga', backendId: 5, label: 'Fadiga', icon: 'Battery', color: 'blue' },
   { id: 'ansiedade', backendId: 23, label: 'Ansiedade', icon: 'Brain', color: 'teal' },
-  { id: 'insonia', backendId: 20, label: 'Insonia', icon: 'Moon', color: 'indigo' },
-  { id: 'nausea', backendId: 3, label: 'Nausea', icon: 'Pill', color: 'yellow' },
+  { id: 'insonia', backendId: 20, label: 'Insônia', icon: 'Moon', color: 'indigo' },
+  { id: 'nausea', backendId: 3, label: 'Náusea', icon: 'Pill', color: 'yellow' },
   { id: 'tosse', backendId: 4, label: 'Tosse', icon: 'Thermometer', color: 'orange' },
   { id: 'tontura', backendId: 11, label: 'Tontura', icon: 'Brain', color: 'teal' },
   { id: 'dor_peito', backendId: 17, label: 'Dor no peito', icon: 'Frown', color: 'red' },
@@ -29,7 +29,7 @@ export const SYMPTOM_TYPES = [
   { id: 'outro', backendId: 99, label: 'Outro', icon: 'Plus', color: 'gray' }
 ]
 
-// IDs validos para validacao rapida
+// IDs válidos para validação rápida
 const VALID_SYMPTOM_IDS = new Set(SYMPTOM_TYPES.map(t => t.id))
 
 // Mapa de tipo frontend -> ID do backend
@@ -86,7 +86,7 @@ const loadSymptoms = async () => {
           intensity: Math.ceil(item.pain_level / 2), // Converte 1-10 para 1-5
           notes,
           date: item.date,
-          time: '00:00', // Backend nao armazena hora
+          time: '00:00', // Backend não armazena hora
           createdAt: item.date
         }
       })
@@ -97,7 +97,7 @@ const loadSymptoms = async () => {
       throw new Error('API response invalid')
     }
   } catch (err) {
-    console.warn('API indisponivel, usando localStorage:', err.message)
+    console.warn('API indisponível, usando localStorage:', err.message)
     useLocalStorage.value = true
     symptoms.value = safeLocalStorageGet(STORAGE_KEY, [], validateSymptomsData)
   } finally {
@@ -116,7 +116,7 @@ export function useSymptoms() {
   const addSymptom = async (symptomData) => {
     // Validação do tipo (usando Set para O(1) lookup)
     if (!VALID_SYMPTOM_IDS.has(symptomData.type)) {
-      throw new Error('Tipo de sintoma invalido')
+      throw new Error('Tipo de sintoma inválido')
     }
 
     // Se for "outro", precisa ter um customLabel
@@ -127,13 +127,13 @@ export function useSymptoms() {
     // Valida e sanitiza data
     const validDate = validateDate(symptomData.date)
     if (!validDate) {
-      throw new Error('Data invalida')
+      throw new Error('Data inválida')
     }
 
     // Valida horário
     const validTime = validateTime(symptomData.time)
     if (!validTime) {
-      throw new Error('Horario invalido')
+      throw new Error('Horário inválido')
     }
 
     const newSymptom = {
@@ -191,7 +191,7 @@ export function useSymptoms() {
   const updateSymptom = async (id, updates) => {
     const index = symptoms.value.findIndex(s => s.id === id)
     if (index === -1) {
-      throw new Error('Sintoma nao encontrado')
+      throw new Error('Sintoma não encontrado')
     }
 
     const sanitizedUpdates = {
@@ -208,7 +208,7 @@ export function useSymptoms() {
   const deleteSymptom = async (id) => {
     const index = symptoms.value.findIndex(s => s.id === id)
     if (index === -1) {
-      throw new Error('Sintoma nao encontrado')
+      throw new Error('Sintoma não encontrado')
     }
 
     // Tenta deletar via API

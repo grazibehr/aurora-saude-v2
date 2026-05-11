@@ -269,7 +269,7 @@ const calculatedAge = computed(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-teal-50 via-white to-cyan-50 flex flex-col">
+  <div class="h-screen bg-gradient-to-br from-teal-50 via-white to-cyan-50 flex flex-col overflow-hidden">
     <!-- Header -->
     <header class="p-4 flex items-center justify-between">
       <div class="flex items-center gap-3">

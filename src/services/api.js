@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://aurorasaude-backend.onrender.com";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "https://aurorasaude-backend-production.up.railway.app";
 
 class ApiService {
   constructor() {
